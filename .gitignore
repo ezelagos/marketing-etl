@@ -1,0 +1,14 @@
+venv/
+data/
+__pycache__/
+.env
+.DS_Store
+
+# Ignorar todos los CSVs (incluyendo el master dataset en la raíz)
+*.csv
+
+# Airflow: Ignorar logs y base de datos, pero permitir DAGs
+airflow/logs/
+airflow/*.db
+airflow/*.cfg
+airflow/webserver_config.py
