@@ -44,31 +44,6 @@ graph TD;
     subgraph Orquestación [Apache Airflow DAG]
     A --> C --> E
     end
-
-¡Eso está genial! Tienes una visión muy clara del flujo de datos. Has tocado los puntos críticos: Particionamiento, Ingesta Cloud, Transformación y Entrega de Valor (KPIs).
-
-Para el README.md, vamos a darle un toque visual usando Mermaid (una herramienta que GitHub renderiza automáticamente como un diagrama de flujo) y luego explicaremos tus puntos con un lenguaje técnico pulido.
-
-Aquí tienes la sección de Arquitectura lista para copiar. Fíjate cómo transformamos tus puntos en un flujo profesional:
-
-Markdown
-
-## 🏗️ Arquitectura del Pipeline
-
-El flujo de datos sigue una arquitectura ETL automatizada que conecta un entorno local (WSL) con la nube (AWS).
-
-```mermaid
-graph TD;
-    A[🐍 Generador de Datos] -->|Lotes CSV| B(☁️ AWS S3: Data Lake);
-    B -->|Lectura Raw Data| C[🐼 Transformación & Unificación];
-    C -->|Master Dataset| B;
-    C -->|Persistencia Local| D[📁 Local Storage];
-    B -->|Download| E[📊 Motor de Análisis];
-    E -->|KPIs & Métricas| F[📑 Reporte Final];
-    
-    subgraph Orquestación [Apache Airflow DAG]
-    A --> C --> E
-    end
 Flujo de Datos Detallado
 Generación y Particionamiento:
 
@@ -96,35 +71,70 @@ Cálculo automatizado de KPIs de negocio: CPC Real, CTR, y tiempo de visualizaci
 
 Generación de un informe final en consola para la toma de decisiones.
 
+🚀 Instalación y Ejecución
+Sigue estos pasos para desplegar el pipeline en tu entorno local.
 
+Prerrequisitos 📋
+Python 3.10 o superior.
 
-## 🚀 Instalación y Uso
+Una cuenta de AWS activa con un bucket S3 creado.
 
-### Prerrequisitos
-* Python 3.10+
-* Cuenta de AWS activa (con Access Keys creadas)
-* Docker (opcional, si se desea containerizar a futuro)
+Credenciales de AWS (Access Key ID y Secret Access Key) con permisos para S3 (AmazonS3FullAccess o similar).
 
-### 1. Clonar el repositorio
-```bash
-git clone [https://github.com/TU_USUARIO/nombre-del-repo.git](https://github.com/TU_USUARIO/nombre-del-repo.git)
-cd nombre-del-repo
+Paso 1: Clonar el repositorio 📥
+Bash
 
+git clone [https://github.com/ezelagos/marketing-etl.git](https://github.com/ezelagos/marketing-etl.git)
+cd marketing-etl
+Paso 2: Configurar el entorno virtual 🐍
+Es recomendable usar un entorno virtual para aislar las dependencias.
 
-CONFIGURACION ENTORNO VIRTUAL
+Bash
+
+# Crear el entorno virtual
 python3 -m venv venv
+
+# Activar el entorno
 source venv/bin/activate
+Paso 3: Instalar dependencias 📦
+Bash
+
 pip install -r requirements.txt
+Paso 4: Configurar credenciales de AWS ☁️
+El proyecto usa boto3 para conectarse a AWS. Configura tus credenciales localmente:
 
-Configurar Credenciales AWS
+Bash
+
 aws configure
-# Ingresa tu Access Key ID, Secret Key y Región (ej: us-east-1)
+# Ingresa tu AWS Access Key ID, AWS Secret Access Key, y tu región por defecto (ej. us-east-1).
+Paso 5: Inicializar Airflow 🌬️
+Configura la base de datos y crea un usuario administrador para Airflow.
 
-EJECUTAR PIPELINE
-iniciar AIRFLOW y EJECUTAR DAG
+Bash
+
+# Inicializar la base de datos
+airflow db init
+
+# Crear un usuario admin (cambia los valores según prefieras)
+airflow users create \
+    --username admin \
+    --firstname Peter \
+    --lastname Parker \
+    --role Admin \
+    --email spiderman@superhero.org \
+    --password admin
+Paso 6: Ejecutar el Pipeline ▶️
+Puedes iniciar el servidor web y el scheduler de Airflow en una sola terminal para pruebas locales.
+
+Bash
+
 airflow standalone
-# O ejecutar los scripts manualmente para testing:
-python3 marketing_data_gen.py
-python3 data_merger.py
+Abre tu navegador en http://localhost:8080.
+
+Inicia sesión con el usuario admin que creaste.
+
+Busca el DAG marketing_pipeline_v1, actívalo (ON) y ejecútalo (Trigger DAG).
+
+
 
 CREADO POR EZEQUIEL LAGOS
